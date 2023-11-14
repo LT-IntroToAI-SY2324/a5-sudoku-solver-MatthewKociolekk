@@ -185,8 +185,28 @@ def DFS(state: Board) -> Board:
     Returns:
         either None in the case of invalid input or a solved board
     """
-    pass
+    the_stack = Stack()
+    the_stack.push(state)
+    while not the_stack.is_empty():
+        curr = the_stack.pop()
+        if curr.goal_test():
+            return curr
+        elif not curr.failure_test():
+            row, col = curr.find_most_constrained_cell()
+            for sel in curr.rows[row][col]:
+                # Create a copy of the board
+                cpy = copy.deepcopy(curr)
+                cpy.update(row, col, sel)
+                the_stack.push(cpy)
+                print(the_stack)
 
+            # sel = curr.rows[row][col]
+            # print(row, col, sel)
+            # curr.update(row, col, sel[0])
+            # curr.print_pretty()
+            # the_stack.push(curr)
+            
+    return None
 
 def BFS(state: Board) -> Board:
     """Performs a breadth first search. Takes a Board and attempts to assign values to
@@ -200,7 +220,24 @@ def BFS(state: Board) -> Board:
     Returns:
         either None in the case of invalid input or a solved board
     """
-    pass
+    the_queue = Queue()
+    the_queue.put(state)
+
+    while not the_queue.empty():
+        curr = the_queue.get()
+
+        if curr.goal_test():
+            return curr
+        elif not curr.failure_test():
+            row, col = curr.find_most_constrained_cell()
+            for sel in curr.rows[row][col]:
+                # Create a copy of the board
+                cpy = copy.deepcopy(curr)
+                cpy.update(row, col, sel)
+                the_queue.put(cpy)
+                print(the_queue)
+
+    return None
 
 
 if __name__ == "__main__":
@@ -335,9 +372,12 @@ if __name__ == "__main__":
         g.update(trip[0],trip[1],trip[2])
     g.print_pretty()
     print(g)
-    g.rows[5][3] = []
-    print(g.find_most_constrained_cell())
-    print(g.failure_test())
+    # g.rows[5][3] = []
+    # print(g.find_most_constrained_cell())
+    # print(g.failure_test())
+    sol = DFS(g)
+    print(sol)
+    sol.print_pretty()
     # From the above print statement, you can see which numbers
     #  have been assigned to the board, and then create test
     #  cases by looking at the board and listing what values are
